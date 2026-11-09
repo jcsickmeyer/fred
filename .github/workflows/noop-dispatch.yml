@@ -1,0 +1,14 @@
+# FORK-ONLY test file. workflow_dispatch only: triggers no run on pull_request.
+name: noop-dispatch
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo noop
