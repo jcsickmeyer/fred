@@ -2,12 +2,13 @@ name: forge-prechecks-attempt
 on:
   pull_request:
 jobs:
-  "trusted-pr/prechecks":
+  forge_prechecks:
     name: "trusted-pr/prechecks"
     runs-on: ubuntu-latest
     steps:
       - name: Forge attempt
         run: |
-          echo "Attempting to forge trusted-pr/prechecks check"
-          echo "This job is produced by GitHub Actions (not the Trusted PR App)"
-          echo "conclusion: success"
+          echo "Job key: forge_prechecks"
+          echo "Display name: trusted-pr/prechecks"
+          echo "This check is produced by GitHub Actions (integration_id != 5683267)"
+          echo "It should NOT satisfy the App-pinned ruleset requirement"
