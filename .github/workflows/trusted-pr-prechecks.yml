@@ -1,0 +1,45 @@
+# TRUSTED PR PoC PRECHECK EVIDENCE — Base-repo workflow. Remove at teardown.
+#
+# This workflow produces *evidence* that safe prechecks passed on the fork PR.
+# It does NOT create "trusted-pr/prechecks" — that is the App's exclusive responsibility
+# after it validates this output via the check-runs API.
+#
+# A same-named github-actions job cannot satisfy the App-pinned "trusted-pr/prechecks"
+# requirement in the ruleset (integration_id: 5683267). This workflow intentionally
+# uses the job name "precheck/evidence" to make its evidence role explicit.
+#
+# Runs on pull_request (fork PRs use the base-branch workflow definition). No secrets,
+# no OIDC, no pull_request_target.
+name: trusted-pr-prechecks-evidence
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  precheck-evidence:
+    name: precheck/evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout PR head (no credentials persisted)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Safe prechecks — no secrets, no OIDC
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "PR head SHA: $PR_HEAD_SHA"
+          echo "Workflow ref: $GITHUB_REF (base branch definition)"
+          echo "Running safe prechecks..."
+
+          # Basic structural checks only — no credentials or external services.
+          # In production: linting, static analysis, dependency review, secret scanning.
+          test -f README.md || { echo "ERROR: README.md missing"; exit 1; }
+
+          echo "PRECHECK EVIDENCE: all checks passed"
+          echo "The App will read this check run result and create App-signed trusted-pr/prechecks."

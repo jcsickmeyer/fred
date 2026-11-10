@@ -1,0 +1,60 @@
+# TRUSTED PR PoC PROTECTED WORKFLOW — Base-repo workflow. Remove at teardown.
+#
+# Dispatched ONLY by the Trusted PR App (handle-trusted-run.sh) after all security
+# conditions are verified. Never triggered directly by PR code or fork events.
+#
+# Security properties:
+#   - Only reachable via workflow_dispatch (not pull_request, push, etc.)
+#   - Runs entirely from base-branch (main) workflow definitions
+#   - Does NOT checkout or execute PR code
+#   - Verifies input integrity on entry
+#   - No secrets, no OIDC, no pull_request_target
+#   - The App monitors this run and creates trusted-pr/authorized based on outcome
+name: trusted-pr-protected
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to run protected checks for
+        required: true
+        type: string
+      head_sha:
+        description: Authorized PR head SHA (40-hex)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  protected-run:
+    name: trusted-pr/protected-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify inputs are well-formed
+        run: |
+          PR="${{ inputs.pr_number }}"
+          SHA="${{ inputs.head_sha }}"
+          [[ "$PR" =~ ^[0-9]+$ ]] || { echo "ERROR: pr_number is not an integer"; exit 1; }
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "ERROR: head_sha is not a 40-hex SHA"; exit 1; }
+          echo "inputs: pr=$PR sha=$SHA"
+
+      - name: Confirm workflow executes from base branch only
+        run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_SHA=$GITHUB_SHA (base branch HEAD, not PR head)"
+          [[ "$GITHUB_REF" == "refs/heads/main" ]] || { echo "ERROR: not running from main branch"; exit 1; }
+          echo "CONFIRMED: workflow definition is from base branch (main)"
+
+      - name: Protected run — base-branch definitions only (PoC placeholder)
+        run: |
+          echo "Protected run executing for PR=${{ inputs.pr_number }} SHA=${{ inputs.head_sha }}"
+          echo ""
+          echo "In production: execute authorized CI checks using ONLY base-branch code."
+          echo "No PR code is checked out or executed in this workflow."
+          echo ""
+          echo "PROTECTED_RUN: success"
+          echo "The App will read this run's conclusion and set trusted-pr/authorized accordingly."
