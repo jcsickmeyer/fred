@@ -1,0 +1,13 @@
+name: forge-prechecks-attempt
+on:
+  pull_request:
+jobs:
+  "trusted-pr/prechecks":
+    name: "trusted-pr/prechecks"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Forge attempt
+        run: |
+          echo "Attempting to forge trusted-pr/prechecks check"
+          echo "This job is produced by GitHub Actions (not the Trusted PR App)"
+          echo "conclusion: success"
