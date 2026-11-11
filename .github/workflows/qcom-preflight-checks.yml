@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload Poutine SARIF
         if: ${{ !cancelled() && hashFiles('results.sarif') != '' }}
-        uses: github/codeql-action/upload-sarif@94e5ff4159074319a4b3e2f6ed7b1b636bf891b7 #v2.27.4
+        uses: github/codeql-action/upload-sarif@5895b2c9be147bc7f1c75ce72c5cb577febb1907 #v4
         with:
           sarif_file: results.sarif
           category: poutine
@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@94e5ff4159074319a4b3e2f6ed7b1b636bf891b7 #v2.27.4
+        uses: github/codeql-action/init@5895b2c9be147bc7f1c75ce72c5cb577febb1907 #v4
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
@@ -84,6 +84,6 @@ jobs:
       # Python and JavaScript/TypeScript normally use CodeQL autobuild behavior.
 
       - name: Analyze with CodeQL
-        uses: github/codeql-action/analyze@94e5ff4159074319a4b3e2f6ed7b1b636bf891b7
+        uses: github/codeql-action/analyze@5895b2c9be147bc7f1c75ce72c5cb577febb1907 #v4
         with:
           category: "/language:${{ matrix.language }}"
