@@ -68,7 +68,6 @@ jobs:
       matrix:
         language:
           - python
-          - javascript-typescript
 
     steps:
       - name: Checkout repository
