@@ -75,8 +75,8 @@ jobs:
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@5895b2c9be147bc7f1c75ce72c5cb577febb1907 #v4
-        with:
-          languages: javascript-typescript,python
+          languages: python
+          queries: security-extended
 
       # Add build steps here if the repository contains compiled languages.
       # Python and JavaScript/TypeScript normally use CodeQL autobuild behavior.
