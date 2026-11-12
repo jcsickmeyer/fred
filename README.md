@@ -52,3 +52,5 @@ How to contact maintainers. E.g. GitHub Issues, GitHub Discussions could be indi
 <!-- demo update 2026-11-12 -->
 
 <!-- clean-pass 20261112T174155 -->
+
+<!-- demo-fail2 182644 -->
